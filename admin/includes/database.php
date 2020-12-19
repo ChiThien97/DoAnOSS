@@ -13,9 +13,9 @@
         public function __construct()
         {
             define('DB_SERVER','localhost');
-            define('DB_USER','id14366606_root');
-            define('DB_PASS' ,'Thien!@#3003');
-            define('DB_NAME','id14366606_baoday');
+            define('DB_USER','root');
+            define('DB_PASS' ,'');
+            define('DB_NAME','baodaydb');
             $this->link = mysqli_connect(DB_SERVER,DB_USER,DB_PASS,DB_NAME) or die ();
             mysqli_set_charset($this->link,"utf8");
         }
