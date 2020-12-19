@@ -32,7 +32,7 @@
       <ul class="navbar-nav ml-auto">
         <form name="search" action="search.php" method="post">
           <div class="input-group">
-            <input type="text" name="searchtitle" class="form-control" placeholder="Nhập nội dung cần tìm..." required value="<?php echo $_POST['searchtitle'] ?>">
+            <input type="text" name="searchtitle" class="form-control" placeholder="Nhập nội dung cần tìm..." required value="<?php echo isset($_POST['searchtitle'])?$_POST['searchtitle']:''">
             <span class="input-group-btn">
               <button class="btn btn-secondary" type="submit"><i class="fas fa-search"></i></button>
             </span>
