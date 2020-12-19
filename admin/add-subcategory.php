@@ -6,39 +6,44 @@ if(strlen($_SESSION['login'])==0)
 { 
     header('location:index.php');
 }
-else{
+else
+{
     if(isset($_POST['submitsubcat']))
     {
-        $subcatid=intval($_GET['scid']);  
         $idAdmin = $_SESSION['idAdmin'];
-        $data=[
-            'idSubCate' => $subcatid,
+
+        $data = [
             'idCate' => postInput('category'),
             'tenSubCate' => postInput('subcategory'),
-            'moTaSubCate' => postinput('sucatdescription'),
+            'moTaSubCate' => postInput('sucatdescription'),
+            'trangThai' => 1,
             'idAdmin' => $idAdmin,
         ];
+        $addQuery = $db->fetchOne('tbl_danhmuccon',"tenSubCate= '".$data['tenSubCate']."' ");
 
-
-        $condition = ['idSubCate' => $subcatid];
-
-        $editQuery = $db->update('tbl_danhmuccon',$data, $condition );
-        
-        if($editQuery)
+        if(null!=$addQuery)
         {
-            $msg="Danh mục con đã được sửa thành công !!!";
+            $_SESSION['error']= "Tên danh mục con đã tồn tại!! ";
+            $error="Tên danh mục con đã tồn tại, hãy thử lại!!!";
         }
-        else{
-            $error="Hãy thử lại";    
-        }  
+        else
+        {
+            $id_insert= $db->insert("tbl_danhmuccon",$data);
+            if($id_insert)
+            {
+                $msg="Đã thêm danh mục con thành công !!!";
+            }
+            else{
+                $error="Thêm danh mục con thất bại, hãy thử lại !!!";    
+            } 
+        }     
     }
     ?>
-
     <!DOCTYPE html>
     <html lang="en">
         <head>
 
-            <title>Báo Đây | Edit Sub Category</title>
+            <title>Báo Đây | Add SubCategory</title>
 
             <!-- App css -->
             <link href="assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
@@ -59,14 +64,14 @@ else{
             <!-- Begin page -->
             <div id="wrapper">
 
-            <!-- Top Bar Start -->
-            <?php include('includes/topheader.php');?>
-            <!-- Top Bar End -->
+                <!-- Top Bar Start -->
+                <?php include('includes/topheader.php');?>
+                <!-- Top Bar End -->
 
 
-            <!-- ========== Left Sidebar Start ========== -->
-                    <?php include('includes/leftsidebar.php');?>
-            <!-- Left Sidebar End -->
+                <!-- ========== Left Sidebar Start ========== -->
+                        <?php include('includes/leftsidebar.php');?>
+                <!-- Left Sidebar End -->
 
                 <div class="content-page">
                     <!-- Start content -->
@@ -92,7 +97,6 @@ else{
                                 </div>
                             </div>
                             <!-- end row -->
-
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="card-box">
@@ -100,86 +104,90 @@ else{
                                         <hr />
                                         <div class="row">
                                             <div class="col-sm-6">  
-                                                <!---Success Message--->  
+                                            <!---Success Message--->  
                                                 <?php if($msg){ ?>
                                                 <div class="alert alert-success" role="alert">
-                                                    <strong>Hoàn thành!</strong> <?php echo htmlentities($msg);?>
+                                                <strong>Hoàn thành!</strong> <?php echo htmlentities($msg);?>
                                                 </div>
                                                 <?php } ?>
 
                                                 <!---Error Message--->
                                                 <?php if($error){ ?>
                                                 <div class="alert alert-danger" role="alert">
-                                                    <strong>Không hoàn thành!</strong> <?php echo htmlentities($error);?>
-                                                </div>
+                                                <strong>Không hoàn thành!</strong> <?php echo htmlentities($error);?></div>
                                                 <?php } ?>
                                             </div>
                                         </div>
 
-                                        <?php 
-                                        //fetching Category details
-                                        $subcatid=intval($_GET['scid']);
-                                        $SelSubcate = $db->fetchID('tbl_danhmuccon JOIN tbl_danhmuc ON tbl_danhmuccon.idcate = tbl_danhmuc.idCate','idSubCate',$subcatid);
-                                        ?>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <form class="form-horizontal" name="category" method="post">
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">Category</label>
                                                         <div class="col-md-10">
-                                                            <select class="form-control" name="category" required>
-                                                                <option value="<?php echo htmlentities($SelSubcate['idCate']);?>"><?php echo htmlentities($SelSubcate['tenCate']);?></option>
+                                                        <select class="form-control" name="category" required>
+                                                            <option value="">Select Category </option>
                                                                 <?php
                                                                 // Feching active categories
-                                                                $ret=$db->fetchsql("SELECT idCate,tenCate FROM tbl_danhmuc where trangThai=1");
-                                                                foreach($ret as $values)
-                                                                {    
-                                                                ?>
-                                                                <option value="<?php echo htmlentities($values['idCate']);?>"><?php echo htmlentities($values['tenCate']);?></option>
-                                                                <?php } ?>
+                                                                $cateDB = $db->fetchsql("SELECT idCate, tenCate FROM  tbl_danhmuc WHERE trangThai=1");
+                                                                foreach($cateDB as $values){
+                                                                    ?>
+                                                                        <option value="<?php echo htmlentities($values['idCate']);?>"><?php echo htmlentities($values['tenCate']);?>
+                                                                        </option>
+                                                                    <?php
+                                                                }?>
                                                             </select> 
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">Sub-Category</label>
                                                         <div class="col-md-10">
-                                                            <input type="text" class="form-control" value="<?php echo htmlentities($SelSubcate['tenSubCate']);?>" name="subcategory" required>
+                                                            <input type="text" class="form-control" value="" name="subcategory" required>
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">Sub-Category Description</label>
                                                         <div class="col-md-10">
-                                                            <textarea class="form-control" rows="5" name="sucatdescription" required><?php echo htmlentities($SelSubcate['moTaSubCate']);?></textarea>
+                                                            <textarea class="form-control" rows="5" name="sucatdescription" required></textarea>
                                                         </div>
-                                                    </div>                                               
+                                                    </div>
 
                                                     <div class="form-group">
                                                         <label class="col-md-2 control-label">&nbsp;</label>
                                                         <div class="col-md-10">
+                                                    
                                                             <button type="submit" class="btn btn-custom waves-effect waves-light btn-md" name="submitsubcat">
-                                                                Update
+                                                                Submit
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                             <!-- end row -->
 
+
                         </div> <!-- container -->
 
                     </div> <!-- content -->
 
-                    <?php include('includes/footer.php');?>
+                <?php include('includes/footer.php');?>
 
                 </div>
+
+
+
+
             </div>
             <!-- END wrapper -->
+
+
 
             <script>
                 var resizefunc = [];
