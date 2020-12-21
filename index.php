@@ -66,18 +66,18 @@ include('admin/includes/autoload.php');
         foreach($selectQuery as $row){
         ?>
           
-          <div class="card mb-4 row">
-            <a class="col-7" href="news-details.php?nid=<?php echo htmlentities($row['pid'])?>">
-            <div class="card-body ">
+          <div class="card mb-4">
+            <a href="news-details.php?nid=<?php echo htmlentities($row['pid'])?>">
+              <img class="card-img-top" src="admin/postimages/<?php echo htmlentities($row['hinhanh']);?>" alt="<?php echo htmlentities($row['posttitle']);?>">
+              <div class="card-body ">
                 <h2 class="card-title"><?php echo htmlentities($row['posttitle']);?></h2>
                 <!-- <p>
                   <b>Category : </b> 
                   <a href="category.php?catid=<?php echo htmlentities($row['cid'])?>"><?php echo htmlentities($row['category']);?></a> 
                 </p> -->
               </div>
-              <img class="card-img-top" src="admin/postimages/<?php echo htmlentities($row['hinhanh']);?>" alt="<?php echo htmlentities($row['posttitle']);?>">
             </a>
-            <div class="col-5">Test</div>
+            
           </div>
           
         <?php }?>
