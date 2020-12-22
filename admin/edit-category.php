@@ -19,6 +19,14 @@ else
             'moTaCate' => postInput('description'),
             'idAdmin' => $idAdmin,
         ];
+$addQuery=$db->fetchOne("tbl_danhmuc"," tenCate = '".$data['tenCate']."' ");
+        if(null!=$addQuery)
+        {
+            $_SESSION['error']= "Tên danh mục đã tồn tại!! ";
+            $error="Tên danh mục đã tồn tại, hãy thử lại!!!";
+        }
+        else
+        {
         $condition = ['idCate' => $catid];
 
         $editQuery = $db->update('tbl_danhmuc',$data, $condition );
@@ -29,7 +37,7 @@ else
         }
         else{
             $error="Hãy thử lại";    
-        } 
+        } }
     }
 
 
