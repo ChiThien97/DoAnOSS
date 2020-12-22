@@ -19,7 +19,6 @@ else{
             'idAdmin' => $idAdmin,
         ];
 
-
         $condition = ['idSubCate' => $subcatid];
 
         $editQuery = $db->update('tbl_danhmuccon',$data, $condition );
